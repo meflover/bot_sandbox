@@ -1,7 +1,11 @@
-from bot import dp
+from bot import dp,rt
 from program import program 
 from aiogram import F
-from aiogram.types import Message
+from aiogram.types import Message,CallbackQuery
+
+@rt.callback_query(F.data)
+async def inline_handler(call: CallbackQuery):
+    await program.call(call)
 
 @dp.message(F.text.startswith("/start"))
 async def command_handler(message: Message):
