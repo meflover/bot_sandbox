@@ -1,6 +1,6 @@
 from bot import bot
 import time
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 
 class RateLimiter:
     def __init__(self, limit=30, interval=1.0):
@@ -71,9 +71,32 @@ async def dropkeyboard(user_id: int, one_time, buttons: list[str], text: str = "
         one_time_keyboard = one_time
     )
 
-    await bot.send_message(
+    await safe_send(bot.send_message,
         chat_id=user_id,
         text=text,
-        reply_markup=kb
-    )
+        reply_markup=kb)
+
+async def dropinlinekeyboard(
+    user_id: int,
+    buttons: list[str],
+    text: str = ""):
+
+    keyboard = [
+        [
+            InlineKeyboardButton(
+                text=b,
+                callback_data=f"btn:{b}"
+            )
+            for b in buttons[i:i + 4]
+        ]
+        for i in range(0, len(buttons), 4)
+    ]
+
+    kb = InlineKeyboardMarkup(inline_keyboard=keyboard)
+
+    await safe_send(bot.send_message,
+        chat_id=user_id,
+        text=text,
+        reply_markup=kb)
+    
 
