@@ -1,7 +1,7 @@
 from config import admin_id
 from classes import session
 from handlers.safesend import *
-from aiogram.types import Message
+from aiogram.types import Message,CallbackQuery
 
 class Editor:
     def __init__(self):
@@ -13,6 +13,11 @@ class Editor:
         if parts[0] == '/start':
             text = "Hello World!"
             await reply(message,text)
+    @staticmethod
+    async def call(call: CallbackQuery):
+        user = session.short_init(call.from_user.id)
+        text = call.data.split(":")[1]
+        print(text)
 
     @staticmethod
     async def message(message: Message):
@@ -33,6 +38,7 @@ class Editor:
         if message.text:
             await answer(user.id, t_)
             await dropkeyboard(user.id, True, ["1","2","3","4","5"], t_)
+            await dropinlinekeyboard(user.id, ["1","2","3","4","5"], t_)
         if message.audio:
             file_id = message.audio.file_id
             await dropaudio(user.id, file_id)
