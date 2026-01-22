@@ -2,7 +2,7 @@ from config import admin_id
 from classes import session
 from handlers.safesend import *
 from aiogram.types import Message,CallbackQuery
-
+import random
 class Editor:
     def __init__(self):
         self.admin_id = admin_id
@@ -17,7 +17,9 @@ class Editor:
     async def call(call: CallbackQuery):
         user = session.short_init(call.from_user.id)
         text = call.data.split(":")[1]
-        print(text)
+    
+        user.buttons[user.buttons.index(text)] = '$'
+        await edit_inlinekeyboard(user.id, call.message.message_id,user.buttons)
 
     @staticmethod
     async def message(message: Message):
@@ -36,9 +38,10 @@ class Editor:
         t_ = text + caption
 
         if message.text:
-            await answer(user.id, t_)
-            await dropkeyboard(user.id, True, ["1","2","3","4","5"], t_)
-            await dropinlinekeyboard(user.id, ["1","2","3","4","5"], t_)
+            #await answer(user.id, t_)
+            #await dropkeyboard(user.id, True, ["1","2","3","4","5"], t_)
+            user.buttons = ["1","2","3","4","5"]
+            await dropinlinekeyboard(user.id, user.buttons, t_)
         if message.audio:
             file_id = message.audio.file_id
             await dropaudio(user.id, file_id)
